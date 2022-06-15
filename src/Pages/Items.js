@@ -22,37 +22,35 @@ Tasks :
 
 */
 
-import { useState, useEffect } from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { Link, Outlet } from "react-router-dom";
 
 const Items = (props) => {
+  const [userData, setUserData] = useState(() =>
+    JSON.parse(localStorage.getItem("UserData"))
+  );
 
-    const [userData, setUserData] = useState(() => 
-        JSON.parse(localStorage.getItem("UserData")));
+  useEffect(() => {
+    if (userData !== undefined) {
+      console.log(userData);
+      localStorage.setItem("UserData", JSON.stringify(userData));
+    } else {
+      localStorage.removeItem("UserData");
+    }
+  }, [userData]);
 
-    useEffect( () => {
+  return (
+    <div>
+      <nav>
+        <Link to="/items/register">Register</Link> |{" "}
+        <Link to="/items/login">Login</Link> |{" "}
+        <Link to="/items/items">Items</Link>
+      </nav>
 
-        if (userData !== undefined)
-        {
-            console.log(userData);
-            localStorage.setItem("UserData", JSON.stringify(userData));
-        } else {
-            localStorage.removeItem("UserData");
-        }
-
-    }, [userData]);
-
-    return (
-        <div>
-            <nav>
-                <Link to="/items/register">Register</Link> | {" "}
-                <Link to="/items/login">Login</Link>    
-            </nav>   
-            
-            { userData && <p>Welcome {userData.userName} !</p>}
-            <Outlet context={[userData, setUserData]}/>                         
-        </div>
-    )
-}
+      {userData && <p>Welcome {userData.userName} !</p>}
+      <Outlet context={[userData, setUserData]} />
+    </div>
+  );
+};
 
 export default Items;
